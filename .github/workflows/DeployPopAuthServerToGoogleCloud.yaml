@@ -9,7 +9,7 @@ on:
 
 env:
   DOCKER_CONTEXTPATH: ./
-  DOCKERFILE_PATH: PopAuthServer/
+  DOCKERFILE_PATH: ./
   GOOGLECLOUD_REGION: ${{ vars.GOOGLECLOUD_REGION }}
   GOOGLECLOUD_PROJECT:  ${{ vars.GOOGLECLOUD_PROJECT }} # your project
   GOOGLECLOUD_REPOSITORY:  ${{ vars.GOOGLECLOUD_REPOSITORY }} # repository [of images] under your project in Artifact Registry
