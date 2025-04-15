@@ -7,6 +7,7 @@ applications can be deployed with the same codebase.
 
 You are expected to then have your own secondary service for account-data (stats, profile pictures etc) but use this to verify auth tokens
 
+Originally based on https://cloud.google.com/sql/docs/mysql/connect-instance-cloud-run
 
 Auth Server API
 ------------
@@ -26,3 +27,28 @@ That service then verifies token server-to-server before making changes
 e.g.
 - Set username (uid + sesion token)
 - Update stats (uid + session token)
+
+
+
+Setup
+==================
+
+Fork/Template Repository Configuration
+-------------------------
+Fork this repository per-project and configure for your own usage
+
+Workflow deployment using repository `Action Variables` (via `${{var.xxx}}`)
+- `GOOGLECLOUD_REGION` eg. `europe-west2`
+- `GOOGLECLOUD_PROJECT` google cloud project
+- `GOOGLECLOUD_REPOSITORY` name of repository [of images] under your `GOOGLECLOUD_PROJECT` in Artifact Registry
+- `GOOGLECLOUD_IMAGENAME` eg `server` image name inside AR repository (+tag added in workflow)
+Secrets
+- `GOOGLECLOUD_SERVICE_ACCOUNT_KEY`
+
+Deployment
+---------------------
+- Create new `Google Cloud Project`
+- Setup workflow above & deploy
+- Create new `Google Cloud Run` instance and use image from Artifact Repository deployed in previous step
+- `todo: setup database`
+- `todo: configure cloud run instance App API key?`

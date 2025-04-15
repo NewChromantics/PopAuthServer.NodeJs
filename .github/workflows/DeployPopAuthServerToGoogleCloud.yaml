@@ -1,0 +1,65 @@
+name: Deploy PopAuthServer To GoogleCloud
+
+on:
+  push:
+    branches:
+      - main
+    tags:        
+      - '*'
+
+env:
+  DOCKER_CONTEXTPATH: ./
+  DOCKERFILE_PATH: PopAuthServer/
+  GOOGLECLOUD_REGION: ${{ vars.GOOGLECLOUD_REGION }}
+  GOOGLECLOUD_PROJECT:  ${{ vars.GOOGLECLOUD_PROJECT }} # your project
+  GOOGLECLOUD_REPOSITORY:  ${{ vars.GOOGLECLOUD_REPOSITORY }} # repository [of images] under your project in Artifact Registry
+  GOOGLECLOUD_IMAGENAME:  ${{ vars.GOOGLECLOUD_IMAGENAME }} # image name inside AR repository (+tag)
+  
+# https://medium.com/@sbkapelner/building-and-pushing-to-artifact-registry-with-github-actions-7027b3e443c1
+jobs:
+  BuildAndDeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Authorise GoogleCloud
+        id: googlecloudauth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: "${{ secrets.GOOGLECLOUD_SERVICE_ACCOUNT_KEY }}"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Use gcloud CLI
+        run: gcloud info
+
+      - name: Authorise Docker to GoogleCloud
+        run: |
+          gcloud auth configure-docker ${{ env.GOOGLECLOUD_REGION }}-docker.pkg.dev --quiet
+
+      # currently use main, or tag, but seperate step as this may be more complicated later
+      - name: Generate Tag Name
+        id: GetTagName
+        run: |
+          echo "TagName=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      # generate the final tag for docker->artifact registry
+      - name: Generate Artifact Registry Location
+        id: GetImageTag
+        run: |
+          echo "ImageTag=${{ env.GOOGLECLOUD_REGION }}-docker.pkg.dev/${{ env.GOOGLECLOUD_PROJECT }}/${{ env.GOOGLECLOUD_REPOSITORY }}/${{ env.GOOGLECLOUD_IMAGENAME}}:${{ steps.GetTagName.outputs.TagName }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build image
+        working-directory: ${{ env.DOCKER_CONTEXTPATH }}
+        run: |
+          docker build ./ --file ${{ env.DOCKERFILE_PATH }}/Dockerfile --tag ${{ steps.GetImageTag.outputs.ImageTag }}
+
+
+      - name: Push image
+        #if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: docker push ${{ steps.GetImageTag.outputs.ImageTag }}
+      
