@@ -43,7 +43,7 @@ Workflow deployment using repository `Action Variables` (via `${{var.xxx}}`)
 - `GOOGLECLOUD_REPOSITORY` name of repository [of images] under your `GOOGLECLOUD_PROJECT` in Artifact Registry
 - `GOOGLECLOUD_IMAGENAME` eg `server` image name inside AR repository (+tag added in workflow)
 Secrets
-- `GOOGLECLOUD_SERVICE_ACCOUNT_KEY`
+- `GOOGLECLOUD_SERVICE_ACCOUNT_KEY` this is a json key from a `GoogleCloud Service Account` 
 
 Deployment
 ---------------------
