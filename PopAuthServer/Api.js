@@ -5,3 +5,5 @@ export const EndPoint_AppleAuthResult = `AppleAuthResult`;
 export const EndPoint_AppleAuthNotification = `AppleAuthNotification`;
 
 
+//	admin
+export const EndPoint_ListUsers = 'ListUsers';

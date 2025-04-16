@@ -2,11 +2,15 @@
 
 */
 import * as Express from 'express';
-import * as Api from './Api.js'
-import * as Params from './Params.js'
+import * as Api from './Api.js';
+import * as Params from './Params.js';
+import * as Database from './Database.js';
 
 console.log(`Package Version; ${Params.Version}`);
 
+
+//console.log(`Bootup list all users...`);
+//Database.ListAllUsers().then(console.log).catch(console.error);
 
 
 const CorsOrigin = Params.GetParam('CorsOrigin','*' );
@@ -26,16 +30,25 @@ catch(e)
 
 
 const HttpServerApp = Express.default();
+
+// Automatically parse request body as form data.
+//app.use(express.urlencoded({extended: false}));
+
 HttpServerApp.get('/', HandleRoot );
 HttpServerApp.get(`/${Api.EndPoint_AppleAuthResult}`,HandleAppleAuthResultGet);
 HttpServerApp.post(`/${Api.EndPoint_AppleAuthResult}`,HandleAppleAuthResult);
 HttpServerApp.get(`/${Api.EndPoint_AppleAuthNotification}`,HandleAppleAuthNotificationGet);
 HttpServerApp.post(`/${Api.EndPoint_AppleAuthNotification}`,HandleAppleAuthNotification);
-//HttpServerApp.get(`/${Api.EndPoint_JoinPublicGame}`,HandleJoinPublicGame);
+HttpServerApp.get(`/${Api.EndPoint_ListUsers}`,HandleListUsers);
 HttpServerApp.use('/', Express.static(StaticFilesPath));
 
 const HttpServer = HttpServerApp.listen( ListenPort, () => console.log( `Http server on ${JSON.stringify(HttpServer.address())}` ) );
 
+
+function SetServerMeta(Meta)
+{
+	Meta.ServerVersion = Params.Version;
+}
 
 
 async function HandleRequest(Request,Response,Functor)
@@ -56,7 +69,7 @@ async function HandleRequest(Request,Response,Functor)
 		}
 		else if ( typeof Output == typeof {} )
 		{
-			SetMasterServerMeta(Output);
+			SetServerMeta(Output);
 
 			const Json = JSON.stringify( Output, null, '\t' );
 			Response.setHeader('Content-Type','application/json');
@@ -123,5 +136,19 @@ async function HandleAppleAuthResult(Request,Response)
 	//	get params from request POST
 	//	HandleAuthResult(Params)
 	throw `todo: handle apple auth`;
+}
+
+
+async function HandleListUsers(Request,Response)
+{
+	async function Run()
+	{
+		const Users = await Database.ListAllUsers();
+		
+		const ResultJson = {};
+		ResultJson.Users = Users;
+		return ResultJson;
+	}
+	await HandleRequest( Request, Response, Run );
 }
 
