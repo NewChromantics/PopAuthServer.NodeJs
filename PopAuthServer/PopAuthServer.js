@@ -130,7 +130,11 @@ async function HandleAppleAuthNotification(Request,Response)
 //	A successful response contains the following parameters:
 async function HandleAppleAuthResultGet(Request,Response)
 {
-	throw `Unexpected apple auth result with GET`;
+	async function Run()
+	{
+		throw `Unexpected apple auth result with GET`;
+	}
+	await HandleRequest( Request, Response, Run );
 }
 
 async function HandleAppleAuthResult(Request,Response)
