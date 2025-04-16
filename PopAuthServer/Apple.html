@@ -1,0 +1,71 @@
+<html>
+<head>
+	<style>
+		#Error
+		{
+			background:	 red;
+			color:		white;
+			padding:	2em;
+		}
+		
+		#Result
+		{
+			background:	 lime;
+			color:		white;
+			padding:	2em;
+		}
+
+		#Error:empty,
+		#Result:empty
+		{
+			display:	none;
+		}
+	</style>
+</head>
+
+
+<body>
+	<h1>Sign in with apple id</h1>
+	<div id=Error></div>
+	<div id=Result></div>
+	<div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
+	<script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+	<script type="text/javascript">
+		const ServiceId = 'com.newchromantics.notpoker.applesignin';
+		AppleID.auth.init({
+			clientId : ServiceId,
+			scope : 'name email',
+			redirectURI : 'https://auth.not.poker',
+			state : '[STATE]',
+			nonce : '[NONCE]',
+			usePopup : true
+		});
+		
+		// Listen for authorization success.
+		document.addEventListener('AppleIDSignInOnSuccess', (event) => {
+			// Handle successful response.
+			console.log(event.detail.data);
+		});
+		
+		
+		// Listen for authorization failures.
+		document.addEventListener('AppleIDSignInOnFailure', (event) => {
+			// Handle error.
+			console.log(event.detail.error);
+		});
+		
+		/*
+		try 
+		{
+			const data = await AppleID.auth.signIn()
+			console.log(data);
+			// Handle successful response.
+		} catch ( error ) {
+			console.error(error);
+			// Handle error.
+		}
+		*/
+	</script>
+	
+</body>
+</html>

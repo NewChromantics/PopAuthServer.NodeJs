@@ -1,1 +1,7 @@
-export const EndPoint_Hello = `hello`;
+//	called when authorisation occurs
+export const EndPoint_AppleAuthResult = `AppleAuthResult`;
+
+//	called when something happens on the apple account
+export const EndPoint_AppleAuthNotification = `AppleAuthNotification`;
+
+

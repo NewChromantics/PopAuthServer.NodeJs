@@ -11,7 +11,7 @@ console.log(`Package Version; ${Params.Version}`);
 
 const CorsOrigin = Params.GetParam('CorsOrigin','*' );
 const ErrorStatusCode = Params.GetInt('ErrorStatusCode',400);
-const StaticFilesPath = Params.GetParam('StaticFilesPath','./');
+const StaticFilesPath = Params.GetParam('StaticFilesPath','./PopAuthServer/');
 const ListenPort = Params.GetInt('PORT',8888);	//	$PORT -> env PORT on google cloud
 try
 {
@@ -24,15 +24,14 @@ catch(e)
 }
 
 
+
 const HttpServerApp = Express.default();
 HttpServerApp.get('/', HandleRoot );
-/*
-HttpServerApp.get(`/${Api.EndPoint_ListPublicGameChoices}`,HandleListPublicGameChoices);
-HttpServerApp.get(`/${Api.EndPoint_JoinPublicGame}`,HandleJoinPublicGame);
-HttpServerApp.get(`/${Api.EndPoint_ListAllServers}`,HandleListAllServers);
-HttpServerApp.get(`/${Api.EndPoint_AllocateServer}`,HandleAllocateServer);
-HttpServerApp.get(`/${Api.EndPoint_GetGameState}`,HandleGetGameState);
- */
+HttpServerApp.get(`/${Api.EndPoint_AppleAuthResult}`,HandleAppleAuthResultGet);
+HttpServerApp.post(`/${Api.EndPoint_AppleAuthResult}`,HandleAppleAuthResult);
+HttpServerApp.get(`/${Api.EndPoint_AppleAuthNotification}`,HandleAppleAuthNotificationGet);
+HttpServerApp.post(`/${Api.EndPoint_AppleAuthNotification}`,HandleAppleAuthNotification);
+//HttpServerApp.get(`/${Api.EndPoint_JoinPublicGame}`,HandleJoinPublicGame);
 HttpServerApp.use('/', Express.static(StaticFilesPath));
 
 const HttpServer = HttpServerApp.listen( ListenPort, () => console.log( `Http server on ${JSON.stringify(HttpServer.address())}` ) );
@@ -91,5 +90,38 @@ async function HandleRoot(Request,Response)
 	}
 	await HandleRequest( Request, Response, Run );
 	
+}
+
+
+
+async function HandleAppleAuthNotificationGet(Request,Response)
+{
+	throw `Unexpected apple auth notification with GET`;
+}
+
+async function HandleAppleAuthNotification(Request,Response)
+{
+	throw `todo: handle apple notification`;
+}
+
+//	https://developer.apple.com/documentation/signinwithapple/configuring-your-webpage-for-sign-in-with-apple
+//	After the user clicks the Sign in with Apple button,
+//	the framework sends the authorization information to 
+//	Apple. Apple processes the authorization request, and 
+//	sends an HTTP POST request containing the results of 
+//	the authorization to the URL provided in redirectURI. 
+//	The HTTP body contains the result parameters with a
+//	content-type of application/x-www-form-urlencoded. 
+//	A successful response contains the following parameters:
+async function HandleAppleAuthResultGet(Request,Response)
+{
+	throw `Unexpected apple auth result with GET`;
+}
+
+async function HandleAppleAuthResult(Request,Response)
+{
+	//	get params from request POST
+	//	HandleAuthResult(Params)
+	throw `todo: handle apple auth`;
 }
 
