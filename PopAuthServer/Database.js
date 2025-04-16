@@ -6,6 +6,9 @@
 import GetDatabaseInterface from './GoogleCloudSql.js'
 
 const UserTableName = 'auth';
+const DebugJsonColumn = 'debug_json';
+const UserUidColumn = 'user_uid';
+
 
 export async function ListAllUsers()
 {
@@ -52,3 +55,17 @@ export async function GetOrCreateUserWithAppleUid(AppleUid)
 	
 }
 
+export async function WriteDebugAuthRequest(Params)
+{
+	const ParamsJson = JSON.stringify(Params);
+
+	const NowMs = new Date().getTime();
+	const UserUid = `Debug_${NowMs}`;
+	
+	//	get sql connection
+	const Sql = await GetDatabaseInterface();
+	const Query = `INSERT INTO ${UserTableName} (${UserUidColumn},${DebugJsonColumn})
+					VALUES ('${UserUid}','${ParamsJson}');
+					`;
+	await Sql.query(Query);
+}

@@ -67,5 +67,27 @@
 		*/
 	</script>
 	
+	
+	<div>
+	<h1>Fake apple backend authorisation request validation</h1>
+	<div>This should be <code>x-www-form-urlencoded</code></div>
+	<form action="/AppleAuthResult" method="POST">
+		
+		<label for="code">code: (single-use auth code)</label>
+		<input type="text" id="code" name="code" value="123" />
+			
+		<label for="id_token">id_token: (jwt)</label>
+		<input type="text" id="id_token" name="id_token" value="{}" />
+				
+		<label for="state">state:</label>
+		<input type="text" id="state" name="state" value="some_state" />
+		
+		<label for="state">user: (user meta json)</label>
+		<input type="text" id="state" name="state" value="{}"/>
+		
+		<input type="submit" value="Send Auth Result">
+	</form>
+	</div>
+	
 </body>
 </html>

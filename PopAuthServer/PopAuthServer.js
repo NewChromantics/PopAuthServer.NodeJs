@@ -5,6 +5,7 @@ import * as Express from 'express';
 import * as Api from './Api.js';
 import * as Params from './Params.js';
 import * as Database from './Database.js';
+import * as AppleAuth from './AppleAuth.js';
 
 console.log(`Package Version; ${Params.Version}`);
 
@@ -31,8 +32,9 @@ catch(e)
 
 const HttpServerApp = Express.default();
 
-// Automatically parse request body as form data.
-//app.use(express.urlencoded({extended: false}));
+// Automatically parse request body as form data for application/x-www-form-urlencoded
+//HttpServerApp.use(bodyParser.json()); // support json encoded bodies
+HttpServerApp.use(Express.urlencoded({ extended: true }));
 
 HttpServerApp.get('/', HandleRoot );
 HttpServerApp.get(`/${Api.EndPoint_AppleAuthResult}`,HandleAppleAuthResultGet);
@@ -133,9 +135,17 @@ async function HandleAppleAuthResultGet(Request,Response)
 
 async function HandleAppleAuthResult(Request,Response)
 {
-	//	get params from request POST
-	//	HandleAuthResult(Params)
-	throw `todo: handle apple auth`;
+	async function Run()
+	{
+		//console.log(`Query: ${JSON.stringify(Request.body)}`);
+		const Params = Request.body ?? {};
+		const Result = await AppleAuth.HandleAuthResult(Params);
+		
+		//	gr: what result should come back?? just 200?
+		//		cant find documentation
+		return Result ?? `Auth Accepted`;
+	}
+	await HandleRequest( Request, Response, Run );
 }
 
 

@@ -1,7 +1,20 @@
+import * as Database from './Database.js';
+
 
 //	https://developer.apple.com/documentation/signinwithapple/configuring-your-webpage-for-sign-in-with-apple
 export async function HandleAuthResult(Params)
 {
+	//	gr: temp: log entire request to database in a new entry
+	await Database.WriteDebugAuthRequest(Params);
+	
+	return "OK";
+	
+	//	if we dont have jwt, we can't identify the user at all
+	//	and can't write anything (debug) to our own database
+	if ( !Params.id_token )
+	{
+		throw `Apple auth missing id_token`;
+	}
 	/*
 	code
 	A single-use authentication code that expires after five minutes. To learn how to validate this code to obtain user tokens, see Generate and validate tokens.

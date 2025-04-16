@@ -50,5 +50,10 @@ Deployment
 - Create new `Google Cloud Project`
 - Setup workflow above & deploy
 - Create new `Google Cloud Run` instance and use image from Artifact Repository deployed in previous step
-- `todo: setup database`
-- `todo: configure cloud run instance App API key?`
+- Setup CloudSQL database like https://cloud.google.com/sql/docs/mysql/connect-instance-cloud-run#node.js
+	- Setup cloud run env vars
+	- `INSTANCE_UNIX_SOCKET`: Set to /cloudsql/YOUR_PROJECT_ID:us-central1:quickstart-instance
+	- `INSTANCE_CONNECTION_NAME`: Set to your instance's Connection name that appears on the Cloud SQL instances page in the Google Cloud console.
+	- `DB_NAME`: Set to quickstart-db.
+	- `DB_USER`: Set to quickstart-user.
+	- `DB_PASS`: Set to the password of the quickstart-user that you specified in the previous Create a user quickstart step.

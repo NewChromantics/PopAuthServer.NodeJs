@@ -67,7 +67,8 @@ const createTcpPool = async config => {
 };
 
 
-export async function GetDatabaseInterface()
+
+async function AllocateDatabaseInterface()
 {
 	const config = {
 		// [START cloud_sql_mysql_mysql_limit]
@@ -121,5 +122,19 @@ export async function GetDatabaseInterface()
 	} else {
 		throw 'Set either the `INSTANCE_HOST` or `INSTANCE_UNIX_SOCKET` environment variable.';
 	}
+}
+
+let CachedDatabaseInterface = null;
+
+export async function GetDatabaseInterface()
+{
+	if ( CachedDatabaseInterface )
+	{
+		//	todo: verify is still good
+		return CachedDatabaseInterface;
+	}
+	
+	CachedDatabaseInterface = await AllocateDatabaseInterface();
+	return CachedDatabaseInterface;
 }
 export default GetDatabaseInterface;
