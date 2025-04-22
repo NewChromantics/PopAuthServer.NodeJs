@@ -83,10 +83,10 @@ async function HandleRequest(Request,Response,Functor)
 	}
 	catch (e)
 	{
-		console.log(`HandleRequest error -> ${e}`);
+		console.log(`HandleRequest(${Request.url}) error -> ${e}`);
 		Response.statusCode = ErrorStatusCode;
 		Response.setHeader('Content-Type','text/plain');
-		Response.end(`Error ${e}`);
+		Response.end(`Error: ${e}`);
 	}
 }
 
@@ -141,7 +141,7 @@ async function HandleAppleAuthResult(Request,Response)
 {
 	async function Run()
 	{
-		//console.log(`Query: ${JSON.stringify(Request.body)}`);
+		console.log(`HandleAppleAuthResult Query: ${JSON.stringify(Request.body)}`);
 		const Params = Request.body ?? {};
 		const Result = await AppleAuth.HandleAuthResult(Params);
 		
