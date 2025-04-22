@@ -7,7 +7,20 @@ export async function HandleAuthResult(Params)
 	//	gr: temp: log entire request to database in a new entry
 	await Database.WriteDebugAuthRequest(Params);
 	
-	return "OK";
+	//	gr; I think apple server is expecting JSON and then relays
+	//		that back to client
+	const ResultMeta = {};
+	ResultMeta.IdentityToken = Params.id_token;
+	ResultMeta.AuthUid = `Some Auth Uid`;
+	return ResultMeta;
+	
+	/*
+	//	state here provided same as on web
+	{
+		"state":"[STATE]",
+		"code":"c1632f3ba08a7466cb7bf5f96fb6ac4ff.0.pzvw.vjiG6Y-7FOrd5UEl5FwVOQ",
+		"id_token":"eyJraWQiOiJkTWxFUkJhRmRLIiwiYWxnIjoiUlMyNTYifQ.eyJpc3MiOiJodHRwczovL2FwcGxlaWQuYXBwbGUuY29tIiwiYXVkIjoiY29tLm5ld2Nocm9tYW50aWNzLm5vdHBva2VyLmFwcGxlc2lnbmluIiwiZXhwIjoxNzQ0OTAzMDM2LCJpYXQiOjE3NDQ4MTY2MzYsInN1YiI6IjAwMDk1Ni41YWM2YjBjN2M0ODI0NjAzYWMwMWFiMDgxNzNlMGY0OS4xMDAxIiwibm9uY2UiOiJbTk9OQ0VdIiwiY19oYXNoIjoiTTFoeGkybVpNTzk0MFN5UE9RaWtTdyIsImVtYWlsIjoicnA4YmtyOTQ1aEBwcml2YXRlcmVsYXkuYXBwbGVpZC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNfcHJpdmF0ZV9lbWFpbCI6dHJ1ZSwiYXV0aF90aW1lIjoxNzQ0ODE2NjM2LCJub25jZV9zdXBwb3J0ZWQiOnRydWV9.fnt5W-09AuAHVsMuKhLIo0pXyt1E1P0okN1coT7fYfG7RBg2FrEg5fCv3-EH88Dr9zH7l4LebWf2RA3u8Zu-1J3BpxuEBJhc5wxFQj-nexTmxIldwzMkePnRujudRk_vj7nU1ZduL_NHr0GSpVRSEaJf04IcZKZUK1Jp1RRoveUdoUi5re6W2Nasc6esaq6coktq3L5KY-_4IMUFRYtDizB_drxAfy_tLwlAxH6GKFcPGcErGursqjs_7IIzosGxMaW8fHmqrGSzo_sFfxQM0L02bEq2BEAqvaXTrlEIhJ8kw-Qfm82zl3FBllFru4q_NnEsTqxu4KXL0er7mWlt_Q"
+	}*/
 	
 	//	if we dont have jwt, we can't identify the user at all
 	//	and can't write anything (debug) to our own database
