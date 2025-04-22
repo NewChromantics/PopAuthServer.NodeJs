@@ -42,6 +42,7 @@ HttpServerApp.post(`/${Api.EndPoint_AppleAuthResult}`,HandleAppleAuthResult);
 HttpServerApp.get(`/${Api.EndPoint_AppleAuthNotification}`,HandleAppleAuthNotificationGet);
 HttpServerApp.post(`/${Api.EndPoint_AppleAuthNotification}`,HandleAppleAuthNotification);
 HttpServerApp.get(`/${Api.EndPoint_ListUsers}`,HandleListUsers);
+HttpServerApp.get(`/${Api.EndPoint_ResolveIdentity}`,HandleResolveIdentity);
 HttpServerApp.use('/', Express.static(StaticFilesPath));
 
 const HttpServer = HttpServerApp.listen( ListenPort, () => console.log( `Http server on ${JSON.stringify(HttpServer.address())}` ) );
@@ -145,6 +146,7 @@ async function HandleAppleAuthResult(Request,Response)
 		const Params = Request.body ?? {};
 		const Result = await AppleAuth.HandleAuthResult(Params);
 		
+		//	result should be a page displayed to user? (for web)
 		//	gr: what result should come back?? just 200?
 		//		cant find documentation
 		return Result ?? `Auth Accepted`;
@@ -162,6 +164,21 @@ async function HandleListUsers(Request,Response)
 		const ResultJson = {};
 		ResultJson.Users = Users;
 		return ResultJson;
+	}
+	await HandleRequest( Request, Response, Run );
+}
+
+
+
+async function HandleResolveIdentity(Request,Response)
+{
+	async function Run()
+	{
+		const Params = Request.query ?? {};
+		const IdentityToken = Request.query[Api.EndPoint_ResolveIdentity_Param_IdentityToken];
+		const Result = await AppleAuth.ResolveIdentityToAuthUid(IdentityToken);
+		
+		return Result;
 	}
 	await HandleRequest( Request, Response, Run );
 }

@@ -7,3 +7,7 @@ export const EndPoint_AppleAuthNotification = `AppleAuthNotification`;
 
 //	admin
 export const EndPoint_ListUsers = 'ListUsers';
+
+
+export const EndPoint_ResolveIdentity = `ResolveIdentity`;
+export const EndPoint_ResolveIdentity_Param_IdentityToken = `IdentityToken`;

@@ -1,4 +1,5 @@
 import * as Database from './Database.js';
+import * as AppleSignIn from 'apple-signin-auth';
 
 
 //	https://developer.apple.com/documentation/signinwithapple/configuring-your-webpage-for-sign-in-with-apple
@@ -9,17 +10,17 @@ export async function HandleAuthResult(Params)
 	try
 	{
 		//	gr: temp: log entire request to database in a new entry
-		await Database.WriteDebugAuthRequest(Params);
+		//await Database.WriteDebugAuthRequest(Params);
 	}
 	catch(e)
 	{
 		console.error(`${e}`);
 	}
-	//	gr; I think apple server is expecting JSON and then relays
-	//		that back to client
+
 	const ResultMeta = {};
 	ResultMeta.IdentityToken = Params.id_token;
 	ResultMeta.AuthUid = `Some Auth Uid`;
+	
 	return ResultMeta;
 	
 	/*
@@ -66,3 +67,51 @@ export async function HandleAuthResult(Params)
 	 */
 }
 
+async function GetAuthUidFromAppleUserUid(AppleUserUid)
+{
+	//	check database for a user with this Uid
+	//	we know the uid is valid (it's from apple)
+	//	so we can create an account here! 
+	
+	//await Database.GetAuthUidFromAppleUserUid(AppleUserUid);
+
+	return AppleUserUid;
+}
+
+export async function ResolveIdentityToAuthUid(IdentityToken)
+{
+	if ( !IdentityToken )
+		throw `Missing IdentityToken`;
+	
+	const VerifyParams = {};
+	VerifyParams.audience = 'com.newchromantics.notpoker.applesignin';
+	//	this nonce is expected to match the original provided to get this identity token (jwt)
+	//	gr: we could just read it from the jwt? is it in there?
+	VerifyParams.nonce = 'nonce';
+	VerifyParams.ignoreExpiration = false;
+	
+	const Resolved = await AppleSignIn.verifyIdToken(IdentityToken,VerifyParams);
+	
+	if ( Resolved.iss != 'https://appleid.apple.com' )
+		throw `Verified from wrong source`;
+	
+	const AppleUserUid = Resolved.sub;
+	const UserEmail = Resolved.email;
+	//	iss: 'https://appleid.apple.com',
+	//	aud: your service id
+	//	exp: 1745436766,
+	//	iat: 1745350366,
+	//	sub: 'your persistent apple user id',
+	//	nonce: 'nonce',
+	//	email_verified: true,
+	//	is_private_email: true,
+	//	auth_time: 1745350366,
+	//	nonce_supported: true
+	
+	const AuthUid = await GetAuthUidFromAppleUserUid(AppleUserUid);
+	
+	const ResultMeta = {};
+	ResultMeta.AuthUid = AuthUid;
+	
+	return ResultMeta;
+}
