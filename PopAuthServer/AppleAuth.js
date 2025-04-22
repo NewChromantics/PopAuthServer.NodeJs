@@ -4,9 +4,17 @@ import * as Database from './Database.js';
 //	https://developer.apple.com/documentation/signinwithapple/configuring-your-webpage-for-sign-in-with-apple
 export async function HandleAuthResult(Params)
 {
-	//	gr: temp: log entire request to database in a new entry
-	await Database.WriteDebugAuthRequest(Params);
+	console.log(`Auth request ${JSON.stringify(Params)}`);
 	
+	try
+	{
+		//	gr: temp: log entire request to database in a new entry
+		await Database.WriteDebugAuthRequest(Params);
+	}
+	catch(e)
+	{
+		console.error(`${e}`);
+	}
 	//	gr; I think apple server is expecting JSON and then relays
 	//		that back to client
 	const ResultMeta = {};
