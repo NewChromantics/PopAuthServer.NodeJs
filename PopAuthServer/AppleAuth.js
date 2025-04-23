@@ -72,10 +72,8 @@ async function GetAuthUidFromAppleUserUid(AppleUserUid)
 	//	check database for a user with this Uid
 	//	we know the uid is valid (it's from apple)
 	//	so we can create an account here! 
-	
-	//await Database.GetAuthUidFromAppleUserUid(AppleUserUid);
-
-	return AppleUserUid;
+	const AuthUid = await Database.GetOrCreateAuthUidFromAppleUserUid(AppleUserUid);
+	return AuthUid;
 }
 
 export async function ResolveIdentityToAuthUid(IdentityToken)

@@ -10,7 +10,8 @@
     "apple-signin-auth": "^2.0.0",
     "express": "^4.19.2",
     "http-proxy": "^1.18.1",
-    "promise-mysql": "^5.0.0"
+    "promise-mysql": "^5.0.0",
+    "sqlstring": "^2.3.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
